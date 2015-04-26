@@ -30,12 +30,10 @@ By default, only the non-zero elements are included in the computations. However
 }
 }
 \details{
-The basic workhorse of these functions is the `trick':\cr
-\code{aggregate(x ~ i, data = summary(X), FUN = max)}\cr
-This usage of \code{aggregate} can possibly be used for other row- and column-wise summary statistics of sparse matrices.
+The basic workhorse of these functions is the function \code{rollup} from the package \code{slam}.
 }
 \value{
-By default, these functions returns a \code{\link[Matrix]{sparseVector}} with the non-zero maxima or minima. Eventually use \code{as.vector} to turn this into a regular vector.
+By default, these functions returns a \code{\link[Matrix]{sparseVector}} with the non-zero maxima or minima. Use additionally \code{as.vector} to turn this into a regular vector.
 
 When \code{which = T}, the result is a list of two items:
 
@@ -73,11 +71,11 @@ system.time(m2 <- apply(X, 1, max))
 # also some performance loss with size of matrix
 # up to 1e5 entries is still reasonably fast
 
-X <- rSparseMatrix(1e7, 1e7, 1e5)
+X <- rSparseMatrix(1e7, 1e7, 1e6)
 system.time(m <- rowMax(X))
 
 \dontrun{
-X <- rSparseMatrix(1e7, 1e7, 1e6)
+X <- rSparseMatrix(1e7, 1e7, 1e7)
 system.time(M <- rowMax(X)) # about ten times as slow
 }
 
