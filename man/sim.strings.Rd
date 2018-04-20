@@ -8,7 +8,7 @@ String similarity by cosine similarity between bigram vectors
 Efficient computation of pairwise string similarities using a cosine similarity on bigram vectors.
 }
 \usage{
-sim.strings(strings1, strings2 = NULL, sep = "", boundary = TRUE)
+sim.strings(strings1, strings2 = NULL, sep = "", boundary = TRUE, ...)
 }
 \arguments{
   \item{strings1, strings2}{
@@ -19,6 +19,9 @@ Separator used to split the strings into parts. This will be passed to \code{\li
 }
   \item{boundary}{
 In the default setting \code{boundary = T}, a special symbol is added to the front and to the end of each string, adding special bigrams for the initial and the final character. With words from real languages (which are mostly not very long) this has a strong impact.
+}
+  \item{...}{
+Further arguments passed to \code{\link{splitStrings}}.
 }
 }
 \details{
@@ -36,6 +39,15 @@ Michael Cysouw
 The overhead of converting the strings into sparse matrices makes this function not optimal for small datasets. For large datasets the time of the conversion is negligible compared to the actual similarity computation, and then this approach becomes very worthwhile, because fast, and based on sparse matrix computation, that can be sped up by multicore processing in the future.
 
 The result of \code{sim.strings(a)} and \code{sim.strings(a,a)} is identical, but the first version is more efficient, both as to processing time, as well as to the size of the resulting objects.
+}
+\note{
+There is a bash-executable \code{simstrings} distributed with this package (based on the \code{docopt} package) that let you use this function directly in a bash-terminal. The easiest way to use this executable is to softlink the executable to some directory in your bash PATH, for example \code{/usr/local/bin} or simply \code{~/bin}. To softlink the function \code{sim.strings} to this directory, use something like the following in your bash terminal:
+
+\code{ln -is `Rscript -e 'cat(system.file("exec/simstrings", package="qlcMatrix"))'` ~/bin}
+
+From within R your can also use the following (again, optionally changing the linked-to directory from \code{~/bin} to anything more suitable on your system):
+
+\code{file.symlink(system.file("exec/simstrings", package="qlcMatrix"), "~/bin")}
 }
 \seealso{
 \code{\link{splitStrings}, \link{cosSparse}} on which this function is based. Compare with \code{\link[utils:adist]{adist}} from the utils package. On large datasets, \code{sim.strings} seems to be about a factor 30 quicker. The package \code{stringdist} offers many more string comparison methods.

@@ -5,9 +5,9 @@
 # similarities between nominal attributes, i.e nominal variables
 # this code could use some clean-up and harmonization :-)
 
-sim.att <- function(D, method = "chuprov", sparse = TRUE) {
+sim.att <- function(D, method = "chuprov", sparse = TRUE, ...) {
 	
-	X <- splitTable(D)
+	X <- splitTable(D, ...)
 	
 	# Chuprov's T, almost the same as Cramér's V, but easier to implement
 	if (!is.na(pmatch(method,"chuprov"))) {
@@ -94,9 +94,9 @@ sim.att <- function(D, method = "chuprov", sparse = TRUE) {
 # similarities between observations from nominal data
 # this is a very simple wrapper around cosRow and assocRow
 
-sim.obs <- function(D, method = "hamming", sparse = TRUE) {
+sim.obs <- function(D, method = "hamming", sparse = TRUE, ...) {
 	
-	X <- splitTable(D)
+	X <- splitTable(D, ...)
 	
 	# Relative Hamming similarity (Goebl's "Relativer Identitätswert"), i.e. the number of similarities divided by the number of comparisons made
 	if (!is.na(pmatch(method,"hamming"))) {
@@ -177,14 +177,14 @@ sim.words <- function(text1, text2 = NULL, method = res, weight = NULL,
 
 # quick string comparison based on cosine similarity between bigrams
 
-sim.strings <- function(strings1, strings2 = NULL, sep = "", boundary = TRUE) {
+sim.strings <- function(strings1, strings2 = NULL, sep = "", boundary = TRUE, ...) {
 
-	S1 <- splitStrings(strings1, sep = sep, boundary = boundary, simplify = TRUE)
+	S1 <- splitStrings(strings1, sep = sep, boundary = boundary, simplify = TRUE, ...)
 
 	if (is.null(strings2)) {
 		sim <- cosSparse(S1)
 	} else {
-		S2 <- splitStrings(strings2, sep = sep, boundary = boundary, simplify = TRUE)
+		S2 <- splitStrings(strings2, sep = sep, boundary = boundary, simplify = TRUE, ...)
 		M <- jMatrix( rownames(S1), rownames(S2) )
 		sim <- cosSparse( (M$M1*1) %*% S1, (M$M2*1) %*% S2 )
 	}
