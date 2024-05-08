@@ -100,24 +100,36 @@ For large sparse matrices, consider this as an alternative to \code{\link[stats]
 \code{\link{corSparse}}, \code{\link{assocSparse}} for other sparse association measures. See also \code{\link{cosRow}, \link{cosCol}} for variants of cosSparse dealing with nominal data.
 }
 \examples{
-# functional upto limits of RAM of the hardware used
-# consider removing small values of result to improve sparsity
+# reasonable fast on modern hardware
 
-\dontrun{
-
-X <- rSparseMatrix(1e6, 1e6, 1e7)
-print(object.size(X), units = "auto") # 118 Mb
-system.time(M <- cosSparse(X)) # might take half a minute, depending on hardware
-print(object.size(M), units = "auto") # 587 Mb
-M <- drop0(M, tol = 0.1) # remove small values
-print(object.size(M), units = "auto") # reduced to 141 Mb
+\donttest{
+# try different sizes to find limits on local machine
+system.time(X <- rSparseMatrix(1e8, 1e8, 1e6))
+system.time(M <- cosSparse(X))
 }
 
-# Compare various weightings.
+# consider removing small values of result to improve sparsity
+
+X <- rSparseMatrix(1e5, 1e5, 1e6)
+print(object.size(X), units = "auto") # 12 Mb
+system.time(M <- cosSparse(X))
+print(object.size(M), units = "auto") # 59 Mb
+M <- drop0(M, tol = 0.1) # remove small values
+print(object.size(M), units = "auto") # 14 Mb
+
+# Compare various weightings
+
 # with random data from a normal distribution there is almost no difference
 #
 # data from a normal distribution
-# X <- rSparseMatrix(1e2, 1e2, 1e3) 
+X <- rSparseMatrix(1e2, 1e2, 1e3) 
+
+w0 <- cosSparse(X, norm = norm2, weight = NULL)@x
+wi <- cosSparse(X, norm = norm2, weight = idf)@x
+ws <- cosSparse(X, norm = norm2, weight = isqrt)@x
+
+pairs(~ w0 + wi + ws, 
+  labels=c("no weighting","inverse\ndocument\nfrequency","inverse\nsquare root"))
 
 # with heavily skewed data there is a strong difference!
 X <- rSparseMatrix(1e2, 1e2, 1e3,

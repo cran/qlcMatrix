@@ -2,7 +2,11 @@
 # Special "reduced" KhatriRao version in which empty rows are removed.
 # ============================================================
 
-# This is only important for the new rownames, as now only rownames are produced for the non-empty rows. That is more efficient than making all rownames, as in the offical version in the Matrix package. It is *extremely* tricky to get the names right: watch out with the order of the indices!
+# This is only important for the new rownames, because now only rownames are 
+# produced for the non-empty rows. That is more efficient than producing all 
+# rownames, as in the offical KhatriRao implementation in the Matrix package.
+# It is *extremely* tricky to get the names right: 
+# watch out with the order of the indices!
 
 rKhatriRao <- function(X, Y
                        , rownamesX = rownames(X)
@@ -16,7 +20,7 @@ rKhatriRao <- function(X, Y
 	M <- KhatriRao(X, Y, FUN = FUN)
 
 	# remove empty rows
-	selection <- rowSums(M, sparseResult = TRUE) > 0
+	selection <- rowSums(abs(M), sparseResult = TRUE) > 0
 	M <- M[selection@i,]
 	
 	# make names for the non-empty rows
@@ -25,7 +29,7 @@ rKhatriRao <- function(X, Y
 						          ncol = nrow(X),
 						          sparse = TRUE
 					          	)
-	nonzero <- as(nonzero,"lgTMatrix")
+	nonzero <- as(nonzero,"generalMatrix")
 
 	rownamesM <- paste(	rownamesY[nonzero@i + 1],
 						          rownamesX[nonzero@j + 1],	
@@ -75,7 +79,7 @@ unfoldBlockMatrix <- function(X, colGroups, rowGroups = NULL) {
 	if (is.vector(colGroups)) {
 		colGroups <- ttMatrix(colGroups)$M
 	} else {
-		colGroups <- as(colGroups, "dgCMatrix")
+		colGroups <- as(colGroups, "dMatrix")
 	}
 
 	U <- KhatriRao(colGroups,X)
@@ -90,7 +94,7 @@ unfoldBlockMatrix <- function(X, colGroups, rowGroups = NULL) {
 		if (is.vector(rowGroups)) {
 			rowGroups <- ttMatrix(rowGroups)$M
 		} else {
-			rowGroups <- as(rowGroups, "dgCMatrix")
+			rowGroups <- as(rowGroups, "dMatrix")
 		}
 
 		R <- as(kronecker( rep(1,nrow(rowGroups))
@@ -117,10 +121,11 @@ unfoldBlockMatrix <- function(X, colGroups, rowGroups = NULL) {
 rowMax <- function(X, which = FALSE, ignore.zero = TRUE) {
 
 # old approach, much slower
-# new approach much faster using "rollup" in package "slam" !!!
 #	m <- aggregate(x~i, data = summary(X), FUN = max)
 #	maximum <- sparseVector(x = m$x, i = m$i, length = nrow(X))
 
+# new approach much faster using "rollup" in package "slam" !!!
+  
 	Y <- as.simple_triplet_matrix(drop0(X))
 	maximum <- as(slam::rollup(Y, 2, FUN = max), "sparseVector")
 	

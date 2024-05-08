@@ -75,7 +75,7 @@ example <- c("this","is","an","example")
 splitStrings(example)
 splitStrings(example, simplify = TRUE)
 
-\dontrun{
+\donttest{
 # a bit larger, but still quick and efficient
 # taking 15526 wordforms from the English Dalby Bible and splitting them into bigrams
 data(bibles)

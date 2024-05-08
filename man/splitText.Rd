@@ -40,7 +40,7 @@ file name (or full path) for a file to be read.
 \details{
 The function \code{splitText} is actually just a nice examples of how \code{\link{pwMatrix}}, \code{\link{jMatrix}}, and \code{\link{ttMatrix}} can be used to work with parallel texts. 
 
-The function \code{read.text} is a convenience function to read parallel texts as prepared in the \url{paralleltext.info} project.
+The function \code{read.text} is a convenience function to read parallel texts.
 }
 \value{
 When \code{simplify = F}, a list is returned with the following elements:
@@ -66,7 +66,6 @@ text <- c("This is a sentence .","A sentence this is !","Is this a sentence ?")
 splitText(text)
 splitText(text, simplify = TRUE, lowercase = FALSE)
 
-\dontrun{
 # reasonably quick with complete bibles (about 1-2 second per complete bible)
 # texts with only New Testament is even quicker
 data(bibles)
@@ -74,6 +73,7 @@ system.time(eng <- splitText(bibles$eng, bibles$verses))
 system.time(deu <- splitText(bibles$deu, bibles$verses))
 
 # Use example: Number of co-ocurrences between two bibles
+# (this is more conveniently performed by the function sim.words)
 # How often do words from the one language cooccur with words from the other language?
 ENG <- (eng$wW * 1) \%*\% (eng$WR * 1) \%*\% (eng$RS * 1)
 DEU <- (deu$wW * 1) \%*\% (deu$WR * 1) \%*\% (deu$RS * 1)
@@ -95,16 +95,18 @@ R[	c("father","father's","son","son's"),
 # For example: best co-occurrences for the english word "mine"
 sort(R["mine",], decreasing = TRUE)[1:10]
 
+\donttest{
 # To get a quick-and-dirty translation matrix:
 # adding maxima from both sides work quite well
-best <-	  colMax(R, which = TRUE, ignore.zero = FALSE)$which 
-	+ rowMax(R,which = TRUE, ignore.zero = FALSE)$which
+# but this takes some time
+
+cm <- colMax(R, which = TRUE, ignore.zero = FALSE)$which
+rm <- rowMax(R, which = TRUE, ignore.zero = FALSE)$which
+best <- cm + rm
 best <- as(best, "nMatrix")
 
 which(best["your",])
 which(best["went",])
-
-# all of the above is also performed by the function sim.words
 
 # A final speed check:
 # split all 4 texts, and simplify them into one matrix

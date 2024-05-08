@@ -74,8 +74,8 @@ system.time(m2 <- apply(X, 1, max))
 X <- rSparseMatrix(1e7, 1e7, 1e5)
 system.time(m <- rowMax(X))
 
-\dontrun{
-X <- rSparseMatrix(1e7, 1e7, 1e7)
+\donttest{
+X <- rSparseMatrix(1e7, 1e7, 1e5)
 system.time(M <- rowMax(X)) # about ten times as slow
 }
 

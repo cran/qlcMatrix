@@ -51,9 +51,6 @@ var2 <- sample(3, 1000, TRUE)
 M1 <- ttMatrix(var1, simplify = TRUE)
 M2 <- ttMatrix(var2, simplify = TRUE)
 
-% # Note that the transpose is smaller than the regular output
-% object.size(M1) > object.size(t(M1)) # TRUE
-
 # Then taking  the `residuals' from assocSparse ...
 x <- as.matrix(assocSparse(t(M1), t(M2), method = res))
 
@@ -62,6 +59,7 @@ x2 <- chisq.test(var1, var2)$residuals
 class(x2) <- "matrix"
 all.equal(x, x2, check.attributes = FALSE) # TRUE
 
+\donttest{
 # A second quick example: consider a small piece of English text:
 text <- "Once upon a time in midwinter, when the snowflakes were 
 falling like feathers from heaven, a queen sat sewing at her window, 
@@ -96,5 +94,6 @@ sort(freqB, decreasing = TRUE)
 # then the association between N and M is related 
 # to the transition probabilities between the characters. 
 P <- assocSparse(t(M), t(N))
-plot(hclust(as.dist(-P), method = "ward"))
+plot(hclust(as.dist(-P), method = "ward.D"))
+}
 }

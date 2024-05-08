@@ -41,9 +41,9 @@ The option \code{best = T} uses \code{\link{rowMax}} and \code{\link{colMax}}. T
 	
 Guidelines for the value of \code{tol} are difficult to give, as it depends on the method used, but also on the distribution of the data (i.e. the number of sentences, and the frequency distribution of the words in the text). Some suggestions:
 \itemize{
-	\item{}{when \code{weight} is specified, results range between -1 and +1. Then \code{tol = 0.1} should never lead to problems, but often even \code{tol = 0.3} or higher will lead to identical results.
+	\item{when \code{weight} is specified, results range between -1 and +1. Then \code{tol = 0.1} should never lead to problems, but often even \code{tol = 0.3} or higher will lead to identical results.
 	}
-	\item{}{when \code{weight} is not specified (i.e. \code{assocSparse} will be used), then results range between \code{-inf} and \code{+inf}, so the tolerance is more problematic. In general, \code{tol = 2} seems to be unproblematic. Higher tolerance, e.g. \code{tol = 10} can be used to find the `obvious' translations, but you will loose some of the more incidental co-occurrences.
+	\item{when \code{weight} is not specified (i.e. \code{assocSparse} will be used), then results range between \code{-inf} and \code{+inf}, so the tolerance is more problematic. In general, \code{tol = 2} seems to be unproblematic. Higher tolerance, e.g. \code{tol = 10} can be used to find the `obvious' translations, but you will loose some of the more incidental co-occurrences.
 	}
   }
 }
@@ -78,15 +78,16 @@ sim <- sim.words(eng, deu, method = res)
 # sorted co-occurrences for the english word "your" in German:
 sort(sim["your",], decreasing = TRUE)[1:10]
 
+\donttest{
 # ----- complete example of co-occurrences -----
 
-\dontrun{
 # running the complete bibles takes a bit more time (but still manageable)
 system.time(sim <- sim.words(bibles$eng, bibles$deu, method = res))
 
 # results are much better
 # sorted co-occurrences for the english word "your" in German:
 sort(sim["your",], decreasing = TRUE)[1:10]
+
 
 # ----- look for 'best' translations -----
 
@@ -102,6 +103,7 @@ system.time(sim3 <- sim.words(bibles$eng, bibles$deu, best = TRUE, method = res,
 
 # note that the decision on the 'best' remains the same here
 all.equal(sim2$best, sim3$best)
+}
 
 # ----- computations also work with other languages -----
 
@@ -109,5 +111,5 @@ all.equal(sim2$best, sim3$best)
 # translations for 'we' in Tagalog:
 sim <- sim.words(bibles$eng, bibles$tgl, best = TRUE, weight = idf, tol = 0.1)
 which(sim$best["we",])
-}
+
 }
